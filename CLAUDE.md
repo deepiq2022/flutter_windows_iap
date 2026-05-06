@@ -8,7 +8,7 @@ Windows Flutter apps.
 
 **Audience:** Flutter developers distributing apps through the Microsoft Store who need
 non-consumable (durable) IAP on Windows. Consumables and subscriptions are deferred
-(see [docs/TODO.md](docs/TODO.md)).
+(see [doc/TODO.md](doc/TODO.md)).
 
 Published on pub.dev. Windows-only; all other platforms return `UnimplementedError`.
 
@@ -38,27 +38,27 @@ test/
 ├── flutter_windows_iap_test.dart         # Platform-interface delegation tests
 └── flutter_windows_iap_method_channel_test.dart  # Channel round-trip tests
 
-docs/                                     # See section below — read BEFORE diving into code
+doc/                                     # See section below — read BEFORE diving into code
 ```
 
 ## Read these docs first
 
-`docs/` is the canonical reference. Read before reverse-engineering from code.
+`doc/` is the canonical reference. Read before reverse-engineering from code.
 
 | What you need | Read |
 |---|---|
-| Product scope, requirements, what's in/out | [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) |
-| Per-requirement implementation status | [docs/REQUIREMENTS_ASSESSMENT.md](docs/REQUIREMENTS_ASSESSMENT.md) |
-| Code-quality findings and open gaps | [docs/CODE_QUALITY.md](docs/CODE_QUALITY.md) |
-| Open work items | [docs/TODO.md](docs/TODO.md) |
-| Architecture, WinRT patterns, design decisions | [docs/PROJECT_NOTES.md](docs/PROJECT_NOTES.md) |
-| How to test (Dart, C++, integration, manual) | [docs/testing.md](docs/testing.md) |
-| pub.dev publishing workflow | [docs/PUBLISHING.md](docs/PUBLISHING.md) |
-| One file per public API method | [docs/api/](docs/api/) |
-| Building, running, toolchain setup | [docs/claude/BUILDING.md](docs/claude/BUILDING.md) |
-| Fresh-session bootstrap (read on first load) | [docs/claude/README.md](docs/claude/README.md) |
+| Product scope, requirements, what's in/out | [doc/REQUIREMENTS.md](doc/REQUIREMENTS.md) |
+| Per-requirement implementation status | [doc/REQUIREMENTS_ASSESSMENT.md](doc/REQUIREMENTS_ASSESSMENT.md) |
+| Code-quality findings and open gaps | [doc/CODE_QUALITY.md](doc/CODE_QUALITY.md) |
+| Open work items | [doc/TODO.md](doc/TODO.md) |
+| Architecture, WinRT patterns, design decisions | [doc/PROJECT_NOTES.md](doc/PROJECT_NOTES.md) |
+| How to test (Dart, C++, integration, manual) | [doc/testing.md](doc/testing.md) |
+| pub.dev publishing workflow | [doc/PUBLISHING.md](doc/PUBLISHING.md) |
+| One file per public API method | [doc/methods/](doc/methods/) |
+| Building, running, toolchain setup | [doc/claude/BUILDING.md](doc/claude/BUILDING.md) |
+| Fresh-session bootstrap (read on first load) | [doc/claude/README.md](doc/claude/README.md) |
 
-> **First time on this machine?** Read [docs/claude/README.md](docs/claude/README.md) first —
+> **First time on this machine?** Read [doc/claude/README.md](doc/claude/README.md) first —
 > it's the bootstrap guide for a fresh Claude session.
 
 ## Critical project rules
@@ -70,7 +70,7 @@ These rules prevent silent regressions and pub.dev quality issues.
 - **`result->Success()` / `result->Error()` are called from WinRT thread-pool threads**
   inside `winrt::fire_and_forget` coroutines. This is the accepted pattern for Flutter
   Windows plugins but means the `MethodResult` must not be touched after the coroutine
-  captures it. See [docs/PROJECT_NOTES.md § Thread safety](docs/PROJECT_NOTES.md).
+  captures it. See [doc/PROJECT_NOTES.md § Thread safety](doc/PROJECT_NOTES.md).
 - **Never call `result` after moving it.** Each handler moves the `unique_ptr` into a
   `shared_ptr` immediately — do not use the original after that point.
 
@@ -85,7 +85,7 @@ These rules prevent silent regressions and pub.dev quality issues.
 
 - **Three public methods only:** `queryProducts`, `purchase`, `restorePurchases`.
   Do not add new platform-interface methods without also adding method-channel impls,
-  C++ handlers, Dart tests, and a docs/api/ entry.
+  C++ handlers, Dart tests, and a doc/methods/ entry.
 - **All models are in `lib/src/models.dart` and exported from the barrel.**
   Do not scatter model classes across files.
 
@@ -101,16 +101,16 @@ These rules prevent silent regressions and pub.dev quality issues.
 
 When you change code, update docs in the same commit:
 
-- **Edit a C++ handler** → update `docs/api/{method}.md` (Engine behavior + line refs);
-  retire closed TODOs in `docs/TODO.md`.
-- **Add a new public method** → create `docs/api/{method}.md` from the section contract
-  in `docs/api/README.md`; update `docs/REQUIREMENTS.md` and
-  `docs/REQUIREMENTS_ASSESSMENT.md`.
-- **Land a code-quality fix** → flip 🔓 → ✅ in `docs/CODE_QUALITY.md` with date +
+- **Edit a C++ handler** → update `doc/methods/{method}.md` (Engine behavior + line refs);
+  retire closed TODOs in `doc/TODO.md`.
+- **Add a new public method** → create `doc/methods/{method}.md` from the section contract
+  in `doc/methods/README.md`; update `doc/REQUIREMENTS.md` and
+  `doc/REQUIREMENTS_ASSESSMENT.md`.
+- **Land a code-quality fix** → flip 🔓 → ✅ in `doc/CODE_QUALITY.md` with date +
   reference.
-- **Change product scope** → update `docs/REQUIREMENTS.md` and
-  `docs/REQUIREMENTS_ASSESSMENT.md` together.
-- **Publish a version** → follow the checklist in `docs/PUBLISHING.md`.
+- **Change product scope** → update `doc/REQUIREMENTS.md` and
+  `doc/REQUIREMENTS_ASSESSMENT.md` together.
+- **Publish a version** → follow the checklist in `doc/PUBLISHING.md`.
 
 ## Test harness
 
@@ -121,10 +121,10 @@ flutter test                             # Dart unit tests (8 tests, no real Sto
 
 # C++ tests (from example build output after flutter build windows in example/):
 # Open the generated .sln in Visual Studio and run flutter_windows_iap_test target,
-# or see docs/claude/BUILDING.md for command-line instructions.
+# or see doc/claude/BUILDING.md for command-line instructions.
 
 # Integration tests (require MSIX packaging + Microsoft Store sandbox):
-# See docs/testing.md — cannot run in standard CI.
+# See doc/testing.md — cannot run in standard CI.
 ```
 
 ## Recommended agents and skills
@@ -151,5 +151,5 @@ Suggested memory files to maintain:
 - `project_*.md` — current version target, outstanding blockers, next milestone
 - `reference_*.md` — links to Windows Store dashboard, pub.dev package page, CI
 
-See [docs/claude/README.md](docs/claude/README.md) for the full memory bootstrap
+See [doc/claude/README.md](doc/claude/README.md) for the full memory bootstrap
 guidance.

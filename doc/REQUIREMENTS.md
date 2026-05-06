@@ -142,6 +142,6 @@ with clear error surfaces and faithful mapping of Store status codes to Dart enu
 
 When requirements change:
 1. Edit this file to add/modify/retire requirements.
-2. Update `docs/REQUIREMENTS_ASSESSMENT.md` to reflect the new status.
+2. Update `doc/REQUIREMENTS_ASSESSMENT.md` to reflect the new status.
 3. If scope changes (in/out), update the README.md limitations section.
-4. If a new method is added, create `docs/api/{method}.md`.
+4. If a new method is added, create `doc/methods/{method}.md`.

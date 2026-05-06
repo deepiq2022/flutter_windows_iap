@@ -69,7 +69,7 @@ Integration tests require MSIX packaging and a real Microsoft Store sandbox
 account. They cannot run in standard CI (GitHub Actions, etc.).
 
 - **Risk:** regressions in the WinRT path not caught until manual testing.
-- **Fix:** Document the manual test checklist (done — see `docs/testing.md`);
+- **Fix:** Document the manual test checklist (done — see `doc/testing.md`);
   investigate Store test certificates for CI long-term.
 - **Effort:** CI integration is high-effort / uncertain feasibility.
 

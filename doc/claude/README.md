@@ -1,7 +1,7 @@
 # flutter_windows_iap — Claude Session Bootstrap
 
 This directory contains portable guidance for AI tools (Claude and equivalents)
-working on this project. Everything in `docs/claude/` mirrors durable project
+working on this project. Everything in `doc/claude/` mirrors durable project
 conventions so any session on any machine starts with full context — no memory
 files required.
 
@@ -32,13 +32,13 @@ On your first session with this project on a new machine:
 
 1. **Read `CLAUDE.md`** (repo root) — project overview, critical rules, recommended agents.
 2. **Read this file** — you're doing it now.
-3. **Read `docs/PROJECT_NOTES.md`** — architecture, WinRT patterns, design decisions.
-4. **Read `docs/TODO.md`** — what's open so you don't duplicate work.
-5. **Read `docs/claude/BUILDING.md`** — before touching any build commands.
+3. **Read `doc/PROJECT_NOTES.md`** — architecture, WinRT patterns, design decisions.
+4. **Read `doc/TODO.md`** — what's open so you don't duplicate work.
+5. **Read `doc/claude/BUILDING.md`** — before touching any build commands.
 6. **Set up memory** — see the memory section below.
 
-You do NOT need to read every docs file upfront. Read the API docs in `docs/api/`
-only when working on a specific method. Read `docs/REQUIREMENTS.md` only when
+You do NOT need to read every docs file upfront. Read the API docs in `doc/methods/`
+only when working on a specific method. Read `doc/REQUIREMENTS.md` only when
 evaluating scope.
 
 ---
@@ -54,7 +54,7 @@ evaluating scope.
 | C++ standard | C++20, links `windowsapp.lib` |
 | Dart analyze | Clean (0 issues) |
 | Dart tests | 8/8 passing |
-| Blocking pre-publish items | T1-1 through T1-4 (see `docs/TODO.md`) |
+| Blocking pre-publish items | T1-1 through T1-4 (see `doc/TODO.md`) |
 
 ---
 
@@ -106,7 +106,7 @@ Next milestone: Complete T1-1 through T1-4 and publish to pub.dev
 Blockers: [any current blockers]
 
 Why: First public release; package is feature-complete for durable IAP.
-How to apply: Prioritise Tier 1 items from docs/TODO.md.
+How to apply: Prioritise Tier 1 items from doc/TODO.md.
 ```
 
 **`feedback_approach.md`**
@@ -139,7 +139,7 @@ type: reference
 
 When something in this directory becomes stale:
 
-1. Update the affected file in `docs/claude/`.
+1. Update the affected file in `doc/claude/`.
 2. If the change is also relevant to `CLAUDE.md` or another top-level doc, update
    both in the same commit.
 3. Do NOT update per-machine memory files to reflect repo-level facts — the repo

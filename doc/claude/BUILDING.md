@@ -121,7 +121,7 @@ for full packaging instructions.
 
 ## Integration tests
 
-Requires MSIX packaging. See [docs/testing.md](../testing.md) Layer 3 for details.
+Requires MSIX packaging. See [doc/testing.md](../testing.md) Layer 3 for details.
 
 ```bash
 cd example
@@ -168,5 +168,5 @@ dart pub publish --dry-run         # no errors
 flutter build windows --release    # release build succeeds
 ```
 
-All four must pass before publishing. See [docs/PUBLISHING.md](../PUBLISHING.md)
+All four must pass before publishing. See [doc/PUBLISHING.md](../PUBLISHING.md)
 for the full publish workflow.

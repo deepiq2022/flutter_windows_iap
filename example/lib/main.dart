@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_windows_iap/flutter_windows_iap.dart';
 
-// Replace these with your real Microsoft Store product IDs.
-const _testSkuIds = ['rm_ads', 'rs_2026_pack', 'pu_custom'];
+// Replace these with your app's real Microsoft Store product IDs.
+// These are the Store IDs shown in Partner Center for each Durable add-on,
+// e.g. '9NBLGGH4TNMP'. The example will show empty results until real IDs
+// are supplied.
+const _testSkuIds = <String>[
+  // 'YOUR_SKU_ID_1',
+  // 'YOUR_SKU_ID_2',
+];
 
 void main() {
   runApp(const MyApp());

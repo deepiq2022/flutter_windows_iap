@@ -65,7 +65,7 @@ cd build/windows/x64
 ctest --test-dir . -C Debug --output-on-failure
 ```
 
-See [docs/claude/BUILDING.md](claude/BUILDING.md) for the full build setup.
+See [doc/claude/BUILDING.md](claude/BUILDING.md) for the full build setup.
 
 ---
 

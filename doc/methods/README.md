@@ -35,8 +35,8 @@ if the answer is "N/A" — it makes the file machine-parseable and consistent.
 ## Universal conventions
 
 - **File refs** use `file:line` notation, e.g. `lib/src/models.dart:21`.
-- **TODO cross-refs** point to `docs/TODO.md` by ID, e.g. `(TODO T2-1)`.
-- **Code-quality cross-refs** point to `docs/CODE_QUALITY.md` by ID, e.g. `(CODE_QUALITY A-1)`.
+- **TODO cross-refs** point to `doc/TODO.md` by ID, e.g. `(TODO T2-1)`.
+- **Code-quality cross-refs** point to `doc/CODE_QUALITY.md` by ID, e.g. `(CODE_QUALITY A-1)`.
 - When the C++ line numbers change, update the line refs in the method doc in the
   same commit.
 
@@ -46,9 +46,9 @@ if the answer is "N/A" — it makes the file machine-parseable and consistent.
 
 When a new public method is added to `FlutterWindowsIap`:
 
-1. Create `docs/api/{snake_case_name}.md` using the section contract above.
+1. Create `doc/methods/{snake_case_name}.md` using the section contract above.
 2. Add a row to the index table in this README.
-3. Add the method to `docs/REQUIREMENTS.md` under a new `R-XX` group.
-4. Add assessment rows to `docs/REQUIREMENTS_ASSESSMENT.md`.
+3. Add the method to `doc/REQUIREMENTS.md` under a new `R-XX` group.
+4. Add assessment rows to `doc/REQUIREMENTS_ASSESSMENT.md`.
 5. Update `README.md` features table and Usage section.
 6. Update `CHANGELOG.md`.

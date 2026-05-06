@@ -55,16 +55,16 @@ real MSIX-packaged build.
 1. Fix the bug.
 2. Bump `version: 0.x.Y` → `0.x.Y+1` in `pubspec.yaml`.
 3. Add a `## 0.x.Y+1` entry to `CHANGELOG.md`.
-4. Update `docs/REQUIREMENTS_ASSESSMENT.md` if any 🟡/🔴 items were resolved.
-5. Flip relevant items in `docs/CODE_QUALITY.md` and `docs/TODO.md`.
+4. Update `doc/REQUIREMENTS_ASSESSMENT.md` if any 🟡/🔴 items were resolved.
+5. Flip relevant items in `doc/CODE_QUALITY.md` and `doc/TODO.md`.
 
 ### Minor release (new feature, backward-compatible)
 
-1. Implement the feature; update all relevant `docs/api/` files.
+1. Implement the feature; update all relevant `doc/methods/` files.
 2. Bump `version: 0.X.y` → `0.X+1.0`.
-3. Update `docs/REQUIREMENTS.md` if scope changed.
-4. Update `docs/REQUIREMENTS_ASSESSMENT.md`.
-5. Create `docs/api/{new_method}.md` for any new public methods.
+3. Update `doc/REQUIREMENTS.md` if scope changed.
+4. Update `doc/REQUIREMENTS_ASSESSMENT.md`.
+5. Create `doc/methods/{new_method}.md` for any new public methods.
 6. Update `README.md` features table and usage examples.
 7. Full pre-publish checklist above.
 
@@ -150,5 +150,5 @@ topics:
 - [ ] Create a GitHub Release from the tag; paste the CHANGELOG entry as the
       release notes
 - [ ] Close any GitHub issues resolved in this version
-- [ ] Update `docs/TODO.md` — move published Tier 1 items to Closed
-- [ ] Update `docs/REQUIREMENTS_ASSESSMENT.md` if publish gating items are now met
+- [ ] Update `doc/TODO.md` — move published Tier 1 items to Closed
+- [ ] Update `doc/REQUIREMENTS_ASSESSMENT.md` if publish gating items are now met
