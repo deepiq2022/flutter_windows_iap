@@ -4,7 +4,12 @@
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
 
+#include <winrt/Windows.Foundation.Collections.h>
+#include <winrt/Windows.Services.Store.h>
+
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace flutter_windows_iap {
 
@@ -12,7 +17,7 @@ class FlutterWindowsIapPlugin : public flutter::Plugin {
  public:
   static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
 
-  FlutterWindowsIapPlugin();
+  explicit FlutterWindowsIapPlugin(HWND hwnd);
   virtual ~FlutterWindowsIapPlugin();
 
   FlutterWindowsIapPlugin(const FlutterWindowsIapPlugin&) = delete;
@@ -23,25 +28,32 @@ class FlutterWindowsIapPlugin : public flutter::Plugin {
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
 
  private:
-  // Fetches product info for one or more SKU IDs.
-  // Dart method: queryProducts({skuIds: List<String>})
-  // Returns: List<Map> matching WinIapProduct.fromMap
+  HWND hwnd_;
+
+  // Shared-ptr wrapper so result can be captured in fire_and_forget coroutines.
+  using SharedResult =
+      std::shared_ptr<flutter::MethodResult<flutter::EncodableValue>>;
+
   void HandleQueryProducts(
       const flutter::EncodableMap &args,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
 
-  // Opens the native Store purchase dialog for a single SKU.
-  // Dart method: purchase({skuId: String})
-  // Returns: Map matching WinIapPurchaseResult.fromMap
   void HandlePurchase(
       const flutter::EncodableMap &args,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
 
-  // Queries the Store for all owned non-consumable SKUs.
-  // Dart method: restorePurchases()
-  // Returns: List<String> of owned SKU IDs
   void HandleRestorePurchases(
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
+
+  winrt::fire_and_forget QueryProductsAsync(
+      SharedResult result,
+      std::vector<winrt::hstring> sku_ids);
+
+  winrt::fire_and_forget PurchaseAsync(
+      SharedResult result,
+      winrt::hstring sku_id);
+
+  winrt::fire_and_forget RestorePurchasesAsync(SharedResult result);
 };
 
 }  // namespace flutter_windows_iap

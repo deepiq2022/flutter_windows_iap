@@ -1,25 +1,37 @@
 # flutter_windows_iap
 
+[![pub package](https://img.shields.io/pub/v/flutter_windows_iap.svg)](https://pub.dev/packages/flutter_windows_iap)
+[![pub points](https://img.shields.io/pub/points/flutter_windows_iap)](https://pub.dev/packages/flutter_windows_iap/score)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Flutter plugin for Microsoft Store in-app purchases on Windows. Wraps
 [`Windows.Services.Store.StoreContext`](https://learn.microsoft.com/en-us/uwp/api/windows.services.store.storecontext)
-via a C++/WinRT platform channel.
+via a C++/WinRT platform channel — no third-party dependencies, no server-side
+validation required for non-consumables.
 
-> **Status:** scaffold / stub. The Dart API and C++ method routing are complete;
-> the WinRT async calls are marked `// TODO` and return empty results until
-> the full implementation lands.
+| Platform | Supported |
+|---|---|
+| Windows | ✅ |
+| Android / iOS / macOS / Linux / Web | ❌ |
+
+---
 
 ## Features
 
 | Method | Description |
 |---|---|
-| `queryProducts(skuIds)` | Fetch product metadata (title, price, currency) for one or more Store SKU IDs |
+| `queryProducts(skuIds)` | Fetch product metadata (title, description, price) for one or more Store SKU IDs |
 | `purchase(skuId)` | Open the native Microsoft Store purchase dialog for a single SKU |
 | `restorePurchases()` | Return all owned non-consumable SKU IDs for the current Microsoft account |
 
+---
+
 ## Requirements
 
-- Windows 10 version 1607 (build 14393) or later (minimum for `Windows.Services.Store`)
-- App must be packaged as MSIX and distributed through the Microsoft Store
+- **Windows 10 version 1607** (build 14393) or later — minimum for `Windows.Services.Store`
+- App must be **packaged as MSIX** and distributed through the Microsoft Store
+
+---
 
 ## Installation
 
@@ -28,35 +40,70 @@ dependencies:
   flutter_windows_iap: ^0.1.0
 ```
 
+This plugin only activates on Windows; it is safe to include in a multi-platform
+`pubspec.yaml` as long as your code guards IAP calls with a platform check.
+
+---
+
 ## Usage
 
+### 1. Guard platform calls
+
 ```dart
+import 'dart:io' show Platform;
 import 'package:flutter_windows_iap/flutter_windows_iap.dart';
 
-final iap = FlutterWindowsIap.instance;
+final iap = Platform.isWindows ? FlutterWindowsIap.instance : null;
+```
 
-// Fetch product details
-final products = await iap.queryProducts(['rm_ads', 'rs_2026_pack', 'pu_custom']);
+### 2. Query product details
+
+Call this on the paywall screen to display localised titles and prices. Unknown
+SKU IDs are silently omitted by the Store.
+
+```dart
+final products = await iap!.queryProducts(['rm_ads', 'pu_custom']);
 for (final p in products) {
-  print('${p.title}  ${p.formattedPrice}');
+  print('${p.title}  ${p.formattedPrice}  (${p.currencyCode})');
 }
+```
 
-// Purchase
-final result = await iap.purchase('rm_ads');
+### 3. Purchase
+
+```dart
+final result = await iap!.purchase('rm_ads');
+
 switch (result.status) {
   case WinIapPurchaseStatus.succeeded:
-    // grant entitlement
+    // SKU is now owned — grant the entitlement.
+    break;
   case WinIapPurchaseStatus.alreadyPurchased:
-    // already owned — grant entitlement
+    // User already owns this — grant entitlement silently.
+    break;
   case WinIapPurchaseStatus.userCancelled:
-    // user dismissed the dialog
+    // User dismissed the Store dialog — no action needed.
+    break;
   case WinIapPurchaseStatus.failed:
-    print('Purchase failed: HRESULT 0x${result.extendedError?.toRadixString(16)}');
+    final code = result.extendedError?.toRadixString(16) ?? '?';
+    print('Purchase failed: HRESULT 0x$code');
+    break;
 }
-
-// Restore on app launch
-final owned = await iap.restorePurchases();
 ```
+
+### 4. Restore on launch
+
+Always call this at app startup to reinstate entitlements for users who
+reinstall or switch devices.
+
+```dart
+final owned = await iap!.restorePurchases();
+// owned is a List<String> of SKU IDs the current account has purchased.
+if (owned.contains('rm_ads')) {
+  removeAds();
+}
+```
+
+---
 
 ## Models
 
@@ -78,16 +125,57 @@ final owned = await iap.restorePurchases();
 | `status` | `WinIapPurchaseStatus` | `succeeded`, `alreadyPurchased`, `userCancelled`, or `failed` |
 | `extendedError` | `int?` | HRESULT from `RequestPurchaseAsync` when status is `failed` |
 
-## Platform support
+### `WinIapPurchaseStatus`
 
-| Platform | Supported |
+| Value | Meaning |
 |---|---|
-| Windows | ✅ |
-| Android | ❌ |
-| iOS | ❌ |
-| macOS | ❌ |
-| Linux | ❌ |
-| Web | ❌ |
+| `succeeded` | Purchase completed; SKU is now owned |
+| `alreadyPurchased` | Non-consumable was already owned by this account |
+| `userCancelled` | User closed the Store dialog without purchasing |
+| `failed` | Store returned an error; check `extendedError` for the HRESULT |
+
+---
+
+## Error handling
+
+All three methods throw a `PlatformException` if the Store layer itself fails
+(e.g. the Store service is unavailable, or `IInitializeWithWindow` fails).
+
+```dart
+try {
+  final result = await iap!.purchase('rm_ads');
+  // ...
+} on PlatformException catch (e) {
+  // e.code    == 'STORE_ERROR'
+  // e.message == WinRT error message
+  // e.details == HRESULT as int (when available)
+}
+```
+
+---
+
+## Microsoft Store setup
+
+1. In [Partner Center](https://partner.microsoft.com), open your app submission.
+2. Under **In-app products**, create a **Durable** add-on for each SKU.
+3. Note the **Store ID** (e.g. `9NBLGGH4TNMP`) — this is the `skuId` you pass
+   to the plugin.
+4. During development, use the
+   [Store testing guide](https://learn.microsoft.com/en-us/windows/apps/publish/store-test-scenarios)
+   to test purchases without real charges.
+
+---
+
+## Limitations
+
+- **Non-consumables (Durable add-ons) only.** Consumable and subscription add-ons are
+  not yet supported; calling `purchase` on one will return `failed`.
+- **Requires MSIX packaging.** `Windows.Services.Store` is unavailable in unpackaged
+  Win32 apps.
+- **No offline license verification.** License state is always fetched live from the
+  Store; there is no local cache.
+
+---
 
 ## License
 
